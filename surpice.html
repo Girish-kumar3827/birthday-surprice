@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Birthday Surprise</title>
+  <style>
+    body {
+      background-color: #ffe6f2;
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 50px;
+      overflow-x: hidden;
+    }
+
+    /* Gift Box */
+    .giftBox {
+      font-size: 100px;
+      cursor: pointer;
+      animation: bounce 1s infinite;
+    }
+
+    @keyframes bounce {
+      0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+      40% { transform: translateY(-20px); }
+      60% { transform: translateY(-10px); }
+    }
+
+    #gift, #giftText, #message, #notes, #options, #finalNote {
+      display: none;
+    }
+
+    .button {
+      margin: 20px;
+      padding: 10px 20px;
+      font-size: 18px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      background: #ff66b2;
+      color: white;
+    }
+
+    .button:hover { background: #e60073; }
+
+    #typing {
+      font-size: 22px;
+      margin-top: 20px;
+    }
+
+    /* Balloons */
+    #balloons {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: 999;
+    }
+
+    .balloon {
+      position: absolute;
+      bottom: -150px;
+      font-size: 50px;
+      animation: floatUp 6s linear infinite;
+    }
+
+    @keyframes floatUp {
+      0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(-110vh) rotate(360deg); opacity: 0; }
+    }
+
+    /* Final Note Glow */
+    #finalNote h2 {
+      font-size: 2.2em;
+      color: #ff1493;
+      text-shadow: 0 0 10px #ff66b2, 0 0 20px #ff3399, 0 0 30px #ff0066;
+      animation: glow 2s infinite alternate;
+    }
+
+    @keyframes glow {
+      from { text-shadow: 0 0 5px #ff66b2, 0 0 10px #ff3399, 0 0 15px #ff0066; }
+      to { text-shadow: 0 0 20px #ff3399, 0 0 30px #ff0066, 0 0 40px #ff0033; }
+    }
+
+    /* Heart Animation */
+    .heart {
+      display: inline-block;
+      font-size: 40px;
+      color: red;
+      animation: beat 1s infinite;
+    }
+
+    @keyframes beat {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.3); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Balloons -->
+  <div id="balloons"></div>
+
+  <!-- Gift -->
+  <h1 id="gift" class="giftBox">🎁</h1>
+  <p id="giftText">Click the gift to open 🎁</p>
+
+  <!-- Birthday Message -->
+  <div id="message">
+    <h2>🎉 Happy Birthday dear Nandini 🎂🎈</h2>
+    <button class="button" onclick="showNote1()">Next ➡️</button>
+  </div>
+
+  <!-- Notes -->
+  <div id="notes">
+    <p id="typing"></p>
+    <button class="button" id="nextBtn" style="display:none;" onclick="showNote2()">Next ➡️</button>
+  </div>
+
+  <!-- Options -->
+  <div id="options">
+    <button class="button" onclick="showFinal()">💖 Yes, I loved it!</button>
+    <button class="button" onclick="endSurprise()">❌ Okay bye 😅</button>
+  </div>
+
+  <!-- Final Note -->
+  <div id="finalNote"></div>
+
+  <script>
+    // Show gift first
+    document.getElementById("gift").style.display = "block";
+    document.getElementById("giftText").style.display = "block";
+
+    // When clicking gift
+    document.getElementById("gift").onclick = function() {
+      document.getElementById("gift").style.display = "none";
+      document.getElementById("giftText").style.display = "none";
+      document.getElementById("message").style.display = "block";
+      releaseBalloons(); // 🎈 balloons when gift opens
+    };
+
+    // Notes text (👉 replace with your own!)
+    const note1 = " Happy Birthday cutie 🥳✨! Tumhari muskaan hi sabse badi gift hai jo duniya ko roz milti hai. Aaj ka din sirf tumhare naam hai — bas khush raho, masti karo aur hamesha isi tarah chamakti raho 🌼💫💖";
+    const note2 = " Birthday girl ke liye ek chhoti si baat… 🎂💝 Tum jitni pyaari ho, utni hi special bhi ho! Tumhari ek ‘hii’ se bhi din bright ho jaata hai. Soch lo, tumhari smile se duniya kitni zyada pretty lagti hogi 😍✨🎂🎈";
+    const final = "Shayad maine past mein kabhi tumhe hurt kiya ho ya samajhne mein galti ki ho… lekin ek baat sach hai: tum kabhi akeli nahi ho. 💖 Main hamesha tumhare saath khada hu — chahe mushkil ho ya aasaan. Tum meri prayers, meri good wishes aur meri support hamesha paogi 🌹✨.";
+
+    let index = 0;
+
+    function typeWriter(text, callback) {
+      const typingElement = document.getElementById("typing");
+      typingElement.innerHTML = "";
+      index = 0;
+
+      function typing() {
+        if (index < text.length) {
+          typingElement.innerHTML += text.charAt(index);
+          index++;
+          setTimeout(typing, 50);
+        } else {
+          if (callback) callback();
+        }
+      }
+      typing();
+    }
+
+    function showNote1() {
+      document.getElementById("message").style.display = "none";
+      document.getElementById("notes").style.display = "block";
+      typeWriter(note1, () => {
+        document.getElementById("nextBtn").style.display = "inline-block";
+      });
+    }
+
+    function showNote2() {
+      document.getElementById("nextBtn").style.display = "none";
+      typeWriter(note2, () => {
+        document.getElementById("options").style.display = "block";
+      });
+    }
+
+    function showFinal() {
+      document.getElementById("notes").style.display = "none";
+      document.getElementById("options").style.display = "none";
+      document.getElementById("finalNote").innerHTML = `
+        <h2>${final} <span class="heart">❤️</span></h2>
+      `;
+      document.getElementById("finalNote").style.display = "block";
+      releaseBalloons(); // 🎈 balloons again for the finale
+    }
+
+    function endSurprise() {
+      document.getElementById("notes").style.display = "none";
+      document.getElementById("options").style.display = "none";
+      document.getElementById("finalNote").innerHTML = "<h2>Okay, that's the end 😊</h2>";
+      document.getElementById("finalNote").style.display = "block";
+    }
+
+    // Balloon function
+    function releaseBalloons() {
+      const balloonContainer = document.getElementById("balloons");
+      balloonContainer.innerHTML = ""; // clear old balloons
+
+      const colors = ["🎈", "🎉", "🎊"];
+      for (let i = 0; i < 20; i++) {
+        let balloon = document.createElement("div");
+        balloon.classList.add("balloon");
+        balloon.style.left = Math.random() * 100 + "vw";
+        balloon.style.animationDuration = (3 + Math.random() * 3) + "s";
+        balloon.innerHTML = colors[Math.floor(Math.random() * colors.length)];
+        balloonContainer.appendChild(balloon);
+      }
+    }
+  </script>
+</body>
+</html>
